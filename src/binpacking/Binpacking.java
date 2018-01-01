@@ -70,10 +70,67 @@ public class Binpacking {
 		}
 		
 		for (ArrayList<Integer> al : boites) {
-			sb.append(toString(al, taille));
+			int reste = al.get(0);
+			al.remove(0);
+			sb.append(toString(al, reste));
 			sb.append("\n");
 		}
 
+		return sb.toString();
+	}
+	
+	public static String bestFitPacking(ArrayList<Integer> objets, int taille) {
+		StringBuilder sb = new StringBuilder();
+		ArrayList<ArrayList<Integer>> boites = new ArrayList<>(objets.size());
+		
+		/* On cree autant de boites que d'objets */
+		for (int i=0; i<objets.size(); i++) {
+			boites.add(new ArrayList<Integer>());
+		}
+		
+		/* On ajoute un champ dans la liste pour indiquer la taille restante de la boite */
+		for (ArrayList<Integer> al : boites) {
+			al.add(taille);
+		}
+		
+		int choix;
+		for (int i=0; i<objets.size(); i++) {
+			choix = 0;
+			for (int j=0; j<boites.size()-1; j++) {
+				int reste1 = boites.get(choix).get(0) - objets.get(i);
+				int reste2 = boites.get(j+1).get(0) - objets.get(i);
+				if ((reste1 < 0) && (reste2 >=0)) {
+					choix = j + 1;
+				} else {
+					if ((reste1 >= 0) && (reste2 >= 0)) {
+						if (reste2 < reste1) {
+							choix = j + 1;
+						}
+					}
+				}
+			}
+			int reste = boites.get(choix).get(0);
+			boites.get(choix).add(objets.get(i));
+			reste -= objets.get(i);
+			/* Modification de la taille restante de la boite */
+			boites.get(choix).remove(0);
+			boites.get(choix).add(0, reste);
+		}
+		
+		/* On supprime toutes les boites non utilisees */
+		for (int i=0; i<boites.size(); i++) {
+			if (boites.get(i).get(0) == taille) {
+				boites.remove(i);
+			}
+		}
+		
+		for (ArrayList<Integer> al : boites) {
+			int reste = al.get(0);
+			al.remove(0);
+			sb.append(toString(al, reste));
+			sb.append("\n");
+		}
+		
 		return sb.toString();
 	}
 	
@@ -81,7 +138,7 @@ public class Binpacking {
 		ArrayList<Integer> objets = new ArrayList<>();
 		objets.add(2);
 		objets.add(5);
-		objets.add(4);
+		objets.add(1);
 		
 		/*int nbBoites = fractionalPacking(objets, 6);
 		System.out.println(nbBoites);*/
@@ -89,7 +146,12 @@ public class Binpacking {
 		//String s = toString(objets, 6);
 		//System.out.println(s);
 		
-		String s = firstFitPacking(objets, 6);
-		System.out.println(s);
+		System.out.println("First Fit Packing : \n");
+		String s1 = firstFitPacking(objets, 6);
+		System.out.println(s1);
+		
+		System.out.println("Best Fit Packing : \n");
+		String s2 = bestFitPacking(objets, 6);
+		System.out.println(s2);
 	}
 }
