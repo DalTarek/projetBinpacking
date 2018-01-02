@@ -1,6 +1,7 @@
 package binpacking;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Binpacking {
 
@@ -134,6 +135,19 @@ public class Binpacking {
 		return sb.toString();
 	}
 	
+	
+	public static String firstFitDecreasingPacking(ArrayList<Integer> objets, int taille) {
+		Collections.sort(objets, Collections.reverseOrder());
+		
+		return firstFitPacking(objets, taille);
+	}
+	
+	public static String bestFitDecreasingPacking(ArrayList<Integer> objets, int taille) {
+		Collections.sort(objets, Collections.reverseOrder());
+
+		return bestFitPacking(objets, taille);
+	}
+	
 	public static void main(String[] args) {
 		ArrayList<Integer> objets = new ArrayList<>();
 		objets.add(2);
@@ -147,11 +161,11 @@ public class Binpacking {
 		//System.out.println(s);
 		
 		System.out.println("First Fit Packing : \n");
-		String s1 = firstFitPacking(objets, 6);
+		String s1 = firstFitDecreasingPacking(objets, 6);
 		System.out.println(s1);
 		
 		System.out.println("Best Fit Packing : \n");
-		String s2 = bestFitPacking(objets, 6);
+		String s2 = bestFitDecreasingPacking(objets, 6);
 		System.out.println(s2);
 	}
 }
