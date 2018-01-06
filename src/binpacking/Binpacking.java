@@ -2,6 +2,9 @@ package binpacking;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Binpacking {
 
@@ -28,7 +31,9 @@ public class Binpacking {
 			remplissage.append(objets.get(i));
 			remplissage.append(";");
 		}
-		remplissage.append(objets.get(objets.size()-1));
+		if(objets.size() > 0){
+			remplissage.append(objets.get(objets.size()-1));
+		}
 		remplissage.append("]");
 		remplissage.append(")");
 	
@@ -64,12 +69,18 @@ public class Binpacking {
 		}
 		
 		/* On supprime toutes les boites non utilisees */
+		int tmp = 0;
 		for (int i=0; i<boites.size(); i++) {
 			if (boites.get(i).get(0) == taille) {
+				if(tmp == 0){
+					tmp = i;
+				}
 				boites.remove(i);
 			}
 		}
 		
+		sb.append(tmp);
+		sb.append("\n");
 		for (ArrayList<Integer> al : boites) {
 			int reste = al.get(0);
 			al.remove(0);
@@ -119,12 +130,18 @@ public class Binpacking {
 		}
 		
 		/* On supprime toutes les boites non utilisees */
+		int tmp = 0;
 		for (int i=0; i<boites.size(); i++) {
 			if (boites.get(i).get(0) == taille) {
+				if(tmp == 0){
+					tmp = i;
+				}
 				boites.remove(i);
 			}
 		}
 		
+		sb.append(tmp);
+		sb.append("\n");
 		for (ArrayList<Integer> al : boites) {
 			int reste = al.get(0);
 			al.remove(0);
@@ -148,14 +165,62 @@ public class Binpacking {
 		return bestFitPacking(objets, taille);
 	}
 	
+	public static int getNbUtilisées(String s){
+		Matcher matcher = Pattern.compile("\\d+").matcher(s);
+		matcher.find();
+		int nb = Integer.valueOf(matcher.group());
+		return nb;		
+	}
+	
+	//Test Q16 
+	public static int test(){
+		int n, hboites, valeur, taille, fp, ff, bf, ffd, bfd;
+		ArrayList<Integer> tabfp = new ArrayList<>();
+		ArrayList<Integer> tabff = new ArrayList<>();
+		ArrayList<Integer> tabbf = new ArrayList<>();
+		ArrayList<Integer> tabffd = new ArrayList<>();
+		ArrayList<Integer> tabbfd = new ArrayList<>();
+		Random r;
+		ArrayList<Integer> objets;
+		for(int i = 1; i < 11; i++){
+			fp = 0; 
+			ff = 0;
+			bf = 0; 
+			ffd = 0; 
+			bfd = 0;
+			n = i * 100;
+			hboites = (int) (1.5 * n);
+			taille = (int) (n * 1.5);
+			for(int j = 0; j < 21; j++){
+				objets = new ArrayList<>();
+				for(int o = 0; o < n; o++){
+					r = new Random();
+					valeur = (int) (0.2 * n + r.nextInt((int)(0.8 * n - 0.2 * n)));
+					objets.add(valeur);
+				}
+				fp = fp + fractionalPacking(objets,taille);
+				ff = ff + getNbUtilisées(firstFitPacking(objets,taille));
+				bf = bf + getNbUtilisées(bestFitPacking(objets,taille));
+				ffd = ffd + getNbUtilisées(firstFitDecreasingPacking(objets, taille));
+				bfd = bfd + getNbUtilisées(bestFitDecreasingPacking(objets, taille));
+			}
+			tabfp.add(fp / 20); 
+			tabff.add(ff / 20); 
+			tabbf.add(bf / 20); 
+			tabffd.add(ffd / 20); 
+			tabbfd.add(bfd / 20); 
+		}
+		return 0;
+	}
+	
 	public static void main(String[] args) {
-		ArrayList<Integer> objets = new ArrayList<>();
+		/*ArrayList<Integer> objets = new ArrayList<>();
 		objets.add(2);
 		objets.add(5);
 		objets.add(1);
-		
-		/*int nbBoites = fractionalPacking(objets, 6);
-		System.out.println(nbBoites);*/
+				
+		int nbBoites = fractionalPacking(objets, 6);
+		System.out.println(nbBoites);
 		
 		//String s = toString(objets, 6);
 		//System.out.println(s);
@@ -166,6 +231,7 @@ public class Binpacking {
 		
 		System.out.println("Best Fit Packing : \n");
 		String s2 = bestFitDecreasingPacking(objets, 6);
-		System.out.println(s2);
+		System.out.println(s2);*/
+		test();
 	}
 }
