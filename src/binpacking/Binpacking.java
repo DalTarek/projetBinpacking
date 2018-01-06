@@ -191,7 +191,7 @@ public class Binpacking {
 			n = i * 100;
 			hboites = (int) (1.5 * n);
 			taille = (int) (n * 1.5);
-			for(int j = 0; j < 21; j++){
+			for(int j = 0; j < 20; j++){
 				objets = new ArrayList<>();
 				for(int o = 0; o < n; o++){
 					r = new Random();
